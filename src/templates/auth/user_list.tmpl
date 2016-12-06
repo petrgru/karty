@@ -1,0 +1,41 @@
+{% from "macros/fields.tmpl" import render_input_field, render_password_field, render_checkbox_field, render_submit %}
+{% extends "shared/layout.tmpl" %}
+{% block title %}Výpis uživatelů{% endblock %}
+
+{% block content %}
+<h3>Výpis uzivatelů </h3><br>
+    <a class="btn btn-info" href ='/user_add/'>Přidej uživatele</a>
+    <a class="btn btn-danger" href='/del_all_users/'>Smazat všechny uživatele kromě Adminů</a>
+    <br><br>
+
+<table class="table table-striped" id="tablesorter-demo">
+    <thead>
+        <tr>
+            <th>Nick</th>
+            <th>Celé jméno</th>
+            <th>Číslo karty</th>
+            <th>Číslo čipu</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for n in data %}
+        <tr>
+            <td>{{ n.username }}</td>
+            <td>{{ n.second_name }} {{ n.name }}</td>
+            <td>{{ n.card_number }}</td>
+            <td>{{ n.chip_number }}</td>
+            <td><a class="btn btn-primary" href ='/user_edit/{{ n.id}}'>Editovat</a></td>
+            <td><a class="btn btn-danger" href ='/user_del/{{ n.id}}'>Vymazat</a></td>
+        </tr>
+    </form>
+    {% endfor %}
+    </tbody>
+</table>
+
+    <br><br><br>
+
+    {% endblock %}
+
+|sort(attribute=sorting)

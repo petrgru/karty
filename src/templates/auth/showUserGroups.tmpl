@@ -1,0 +1,35 @@
+{% extends "shared/layout.tmpl" %}
+{% block title %}Uživatelé ve skupinách{% endblock %}
+{% block content %}
+    <table class="table table-striped" id="tablesorter-demo">
+        <thead>
+            <tr>
+                <th>Jméno uživatele</th>
+                <th>Jméno skupiny</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for zaznam in data %}
+            <tr>
+                <td>{{ zaznam[2] }} {{ zaznam[1] }}</td>
+                <td><a href="/inGroup/{{ zaznam[3] }}/{{ zaznam[4] }}">{{ zaznam[4] }}</a></td>
+                <td><a class="btn btn-danger" href="/userGroup_del/{{ zaznam[0] }}/{{ zaznam[3] }}">Vymazat ze skupiny</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+
+
+
+
+{% endblock %}
+
+{% for i in range(data|length) %}
+            <tr>
+                <td>{{ data[i][1] }} {{ data[i][2] }}</td>
+                <td><a href="/inGroup/{{ data[i][4] }}/{{ data[i][3] }}">{{ data[i][3] }}</a></td>
+                <td><a class="btn btn-danger" href="/userGroup_del/{{ data[i][0] }}/{{ data[i][4] }}">Vymazat ze skupiny</a></td>
+            </tr>
+        {% endfor %}

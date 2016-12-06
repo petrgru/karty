@@ -1,0 +1,26 @@
+{% extends "shared/layout.tmpl" %}
+{% block title %}Skupiny{% endblock %}
+{% block content %}
+    <h2>{{ jmeno_skupiny }}</h2>
+    <table class="table table-striped" id="tablesorter-demo">
+        <thead>
+            <tr>
+                <th>Jméno</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for zaznam in data %}
+            <tr>
+                <td>{{ zaznam[2] }} {{ zaznam[1] }}</td>
+                <td><a class="btn btn-danger" href="/delFromGroup/{{ zaznam[3] }}/{{ zaznam[0] }}/{{ jmeno_skupiny }}">Vymaž</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+
+
+
+
+{% endblock %}

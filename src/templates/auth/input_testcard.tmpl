@@ -1,0 +1,13 @@
+{% from "macros/fields.tmpl" import  render_input_field, render_password_field, render_checkbox_field, render_submit %}
+{% extends "shared/layout.tmpl" %}
+
+{% block title %}Test přístupu{% endblock %}
+
+{% block content %}
+  <h3>Test přístupu</h3>
+  <form method="POST" id="add-timecard-form">
+    {{ data.hidden_tag() }}
+    {{ render_input_field(data.card_number) }}
+    {{ render_submit() }}
+  </form>
+{% endblock %}
