@@ -11,8 +11,8 @@ class Group(CRUDModel):
 
     id = Column(Integer, primary_key=True)
     Monday = Column("Monday", Integer,default=False)
-    Tue_ = Column("Tuesday", Integer,default=False)
-    Tuesday = Column("Wednesday", Integer,default=False)
+    Tuesday = Column("Tuesday", Integer,default=False)
+    Wednesday = Column("Wednesday", Integer,default=False)
     Thursday = Column("Thursday", Integer,default=False)
     Friday = Column("Friday", Integer,default=False)
     Saturday = Column("Saturday", Integer,default=False)
