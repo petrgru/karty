@@ -190,18 +190,46 @@ def account():
 @login_required
 def mesicni_vypis_vyber():
     form = MonthInsert()
-    if form.validate_on_submit():
-        return redirect('/sestava_vsichni/' + form.month.data)
+    if request.method == 'POST':
+        return redirect('/sestava_vsichni/' + form.month.data + '/' + form.skupina.data)
     return render_template('auth/recreatemonth.tmpl', form=form, user=current_user)
 
-
-@blueprint.route('/sestava_vsichni/<string:mesic>', methods=['GET'])
+@blueprint.route('/vypisy_vyber_hodiny', methods=['GET', 'POST'])
 @login_required
-def sestava_vsichni(mesic):
+def mesicni_vypis_vyber_hodiny():
+    form = MonthInsert()
+    if request.method == 'POST':
+        return redirect('/sestava_vsichni_hodiny/' + form.month.data + '/' + form.skupina.data)
+    return render_template('auth/recreatemonth.tmpl', form=form, user=current_user)
+
+@blueprint.route('/sestava_vsichni_hodiny/<string:mesic>/<int:skupina>', methods=['GET'])
+@login_required
+def sestava_vsichni_hodiny(mesic,skupina):
     form = db.session.query(User.card_number.label('card_number'), User.second_name.label('fullname'),
                             func.DATE_FORMAT(Card.time, '%Y-%m').label("time"), \
                             func.DATE_FORMAT(Card.time, '%Y').label("year"),
-                            func.DATE_FORMAT(Card.time, '%m').label("month")).join(User_has_group).filter(User_has_group.group_id == 1). \
+                            func.DATE_FORMAT(Card.time, '%m').label("month")).join(User_has_group).filter(User_has_group.group_id == skupina). \
+        join(Card, User.card_number == Card.card_number).group_by(func.DATE_FORMAT(Card.time, '%Y-%m'), User.second_name). \
+        filter(func.DATE_FORMAT(Card.time, '%Y-%m') == mesic). \
+        order_by(User.second_name).all()
+    poledat = []
+    for u in form:
+        prom = pole_calendar(int(u[0]), int(u[3]), int(u[4]))
+        poledat.append(prom)
+    # print (poledat)
+    if len(form) == 0:
+        flash("No data", category="info")
+        return redirect(url_for("auth.mesicni_vypis_vyber"))
+    else:
+        return render_template("auth/sestava_vsichni_hodiny.tmpl", data=poledat, form=form, user=current_user)
+
+@blueprint.route('/sestava_vsichni/<string:mesic>/<int:skupina>', methods=['GET'])
+@login_required
+def sestava_vsichni(mesic,skupina):
+    form = db.session.query(User.card_number.label('card_number'), User.second_name.label('fullname'),
+                            func.DATE_FORMAT(Card.time, '%Y-%m').label("time"), \
+                            func.DATE_FORMAT(Card.time, '%Y').label("year"),
+                            func.DATE_FORMAT(Card.time, '%m').label("month")).join(User_has_group).filter(User_has_group.group_id == skupina). \
         join(Card, User.card_number == Card.card_number).group_by(func.DATE_FORMAT(Card.time, '%Y-%m'), User.second_name). \
         filter(func.DATE_FORMAT(Card.time, '%Y-%m') == mesic). \
         order_by(User.second_name).all()
@@ -360,6 +388,7 @@ def pole_calendar(card_number,year,month):
     startdate='0:00'
     enddate='0:00'
     data['stravenka']=0
+    data['timespend']=0
     #hodnota = list(db.session.query( func.strftime('%d', Card.time).label("den"),func.max(func.strftime('%H:%M', Card.time)).label("Max"),\
     #                         func.min(func.strftime('%H:%M', Card.time)).label("Min"))\
     #                        .filter(func.date(Card.time) == fromdate.date()).filter(Card.card_number == card_number).group_by(func.date(Card.time)))
@@ -411,6 +440,7 @@ def pole_calendar(card_number,year,month):
                 d['enddate']=datafromdb[2]
             rozdil=datetime.strptime(d['enddate'],"%H:%M")-datetime.strptime(d['startdate'],"%H:%M")
             d['timespend']=round(rozdil.total_seconds() / 3600,2)
+            data['timespend'] = data['timespend']+d['timespend']
             if d['timespend'] >= 3:
                 d['dost'] = 0
                 data['stravenka'] = data['stravenka'] + 1

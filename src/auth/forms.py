@@ -139,6 +139,7 @@ class MonthInsert(Form):
     for i in range(1,3):
         months_choices.append((datetime(datum.year+1, i, 1).strftime('%Y-%m'), datetime(datum.year+1, i, 1).strftime('%Y-%m')))
     month = SelectField('Vyber', default=datetime(datum.year, datum.month, 1).strftime('%Y-%m'),choices = months_choices)
+    skupina = SelectField('Skupina',choices=Group.getIdName(),default='Ucitele')
 
 class FileUploadForm(Form):
     #fileName = FieldList(FileField())
