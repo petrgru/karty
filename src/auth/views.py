@@ -416,36 +416,26 @@ def pole_calendar(card_number,year,month):
                 break
 
 
-        if d['dow'] > 4:
-            d['startdate']=''
-            d['enddate']=''
-        else:
-            fromdate=datetime(year, month, day)
-            todate=datetime(year, month, day) + timedelta(days=1)
-
-            #hodnota = db.session.query( func.min(func.strftime('%H:%M', Card.time)).label("Min")).filter(Card.time >= fromdate).filter(Card.time < todate).filter(Card.card_number == card_number)
-            #hodnota = list(db.session.query(func.date(Card.time).label('xxx')).filter(func.date(Card.time) == fromdate.date() ).filter(Card.card_number == card_number).all())
-            #.filter(cast(Card.time,Date) == fromdate.date())
-            #hodnota = list(db.session.query( func.strftime('%d', Card.time).label("den"),func.max(func.strftime('%H:%M', Card.time)).label("Max"),\
-             #                func.min(func.strftime('%H:%M', Card.time)).label("Min"))\
-             #               .filter(func.date(Card.time) == fromdate.date()).filter(Card.card_number == card_number).group_by(func.date(Card.time)))
-                           #.group_by(func.strftime('%Y-%m-%d', Card.time)))
-#            if len(hodnota) > 0 :
- #               print len(hodnota)
-
-            d['startdate']=startdate
-            d['enddate']=enddate
-            if datafromdb :
-                d['startdate']=datafromdb[1]
-                d['enddate']=datafromdb[2]
-            rozdil=datetime.strptime(d['enddate'],"%H:%M")-datetime.strptime(d['startdate'],"%H:%M")
-            d['timespend']=round(rozdil.total_seconds() / 3600,2)
-            data['timespend'] = data['timespend']+d['timespend']
-            if d['timespend'] >= 3:
-                d['dost'] = 0
+#        if d['dow'] > 4:
+#            d['startdate']=''
+#            d['enddate']=''
+#        else:
+        fromdate=datetime(year, month, day)
+        todate=datetime(year, month, day) + timedelta(days=1)
+        d['startdate']=startdate
+        d['enddate']=enddate
+        if datafromdb :
+            d['startdate']=datafromdb[1]
+            d['enddate']=datafromdb[2]
+        rozdil=datetime.strptime(d['enddate'],"%H:%M")-datetime.strptime(d['startdate'],"%H:%M")
+        d['timespend']=round(rozdil.total_seconds() / 3600,2)
+        data['timespend'] = data['timespend']+d['timespend']
+        if d['timespend'] >= 3:
+            d['dost'] = 0
+            if d['dow'] <= 4:
                 data['stravenka'] = data['stravenka'] + 1
-            else:
-                d['dost'] = 1
+        else:
+            d['dost'] = 1
         datarow.append(d)
     data['user']=''
     data['lastday']=lastday
